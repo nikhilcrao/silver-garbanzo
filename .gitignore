@@ -1,2 +1,6 @@
+# Python tmp files
+*.pyc
+.*/__pycache__/*
+
 # Google App Engine generated folder
 appengine-generated/
