@@ -1,6 +1,6 @@
 import os
 
-from flask import Flask, redirect, url_for
+from flask import Flask
 
 def CreateApp(test_config=None):
     app = Flask(__name__, instance_relative_config=True)
@@ -20,6 +20,9 @@ def CreateApp(test_config=None):
         os.makedirs(os.path.join(app.instance_path, 'uploads'))
     except OSError:
         pass
+
+    from . import db
+    db.InitApp(app)
 
     @app.route('/')
     def index():
