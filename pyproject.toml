@@ -2,11 +2,18 @@
 name = "python-template"
 version = "0.1.0"
 description = ""
-authors = ["Your Name <you@example.com>"]
+authors = ["Nikhil Rao <nikhilcrao@gmail.com>"]
 
 [tool.poetry.dependencies]
 python = ">=3.10.0,<3.11"
 flask = "^3.0.0"
+sqlalchemy = "^2.0.23"
+flask-sqlalchemy = "^3.1.1"
+flask-admin = "^1.6.1"
+wtforms-alchemy = "^0.18.0"
+wtforms-bootstrap5 = "^0.3.0"
+wtforms-dateutil = "^0.1"
+wtforms-validators = "^1.0.0"
 
 [tool.pyright]
 # https://github.com/microsoft/pyright/blob/main/docs/configuration.md
