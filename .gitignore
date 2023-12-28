@@ -8,3 +8,7 @@ appengine-generated/
 # Packager Files
 .local/
 .upm/
+
+# Database
+instance/uploads/
+instance/db.sqlite

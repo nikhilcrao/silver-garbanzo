@@ -2,12 +2,12 @@ import os
 
 from flask import Flask
 
-def CreateApp(test_config=None):
+def create_app(test_config=None):
     app = Flask(__name__, instance_relative_config=True)
     app.config.from_mapping(
-        SECRET_KEY='dev',
-        DATABASE=os.path.join(app.instance_path, 'db.sqlite'),
-        UPLOAD_FOLDER=os.path.join(app.instance_path, 'uploads'),
+        SECRET_KEY = 'dev',
+        SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(app.instance_path, 'db.sqlite'),
+        UPLOAD_FOLDER = os.path.join(app.instance_path, 'uploads'),
     )
 
     if test_config is None:
@@ -21,9 +21,15 @@ def CreateApp(test_config=None):
     except OSError:
         pass
 
-    from . import db
-    db.InitApp(app)
+    from . import database
+    database.init_app(app)
 
+    
+    @app.cli.command('reset-db')
+    def reset_db():
+        database.reset_db(app)
+
+    
     @app.route('/')
     def index():
         return 'hello world'
