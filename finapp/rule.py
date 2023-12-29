@@ -6,10 +6,10 @@ from .merchant import get_merchant_id_choices
 
 from flask import Blueprint, render_template, flash, redirect, url_for, request
 from flask_login import current_user, login_required
-from sqlalchemy import or_
 
 
 bp = Blueprint('rule', __name__, url_prefix='/rule')
+
 
 @bp.route('/')
 @login_required
