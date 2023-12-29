@@ -14,7 +14,7 @@ bp = Blueprint('rule', __name__, url_prefix='/rule')
 @bp.route('/')
 @login_required
 def index():
-  rules = Rule.query.order_by('id').all()
+  rules = Rule.query.filter_by(user_id=current_user.id).order_by('id').all()
   return render_template('rule/index.html', rules=rules)
 
 
