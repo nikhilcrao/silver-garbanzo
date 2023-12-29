@@ -25,6 +25,8 @@ def import_transactions(filename):
       date=datetime.datetime.strptime(record_dict['date'], '%Y-%m-%d %H:%M:%S'),
       description=record_dict['merchant'],
       hash=str(hash(record_dict['merchant'] + str(record_dict['amount']) + str(record_dict['date']))),
+      category_id=0,
+      merchant_id=0,
     )
     db.session.add(record)
   db.session.commit()
@@ -34,7 +36,22 @@ def import_transactions(filename):
 @bp.route('/')
 @login_required
 def index():
-  records = Record.query.filter_by(user_id=current_user.id).order_by('id').all()
+  records = Record.query.filter_by(user_id=current_user.id).order_by('id')
+  if 'category_id' in request.args:
+    category_id = request.args.get('category_id', type=int)
+    records = records.filter_by(category_id=category_id)
+  if 'merchant_id' in request.args:
+    merchant_id = request.args.get('merchant_id', type=int)
+    records = records.filter_by(merchant_id=merchant_id)
+  if 'date_from' in request.args:
+    date_from = datetime.datetime.strptime(request.args.get('date_from'), '%Y-%m-%d')
+    records = records.filter(Record.date >= date_from)
+  if 'date_to' in request.args:
+    date_to = datetime.datetime.strptime(request.args.get('date_to'), '%Y-%m-%d')
+    records = records.filter(Record.date <= date_to)
+  if 'search' in request.args:
+    search = request.args.get('search')
+    records = records.filter(Record.description.ilike('%' + search + '%'))
   return render_template('record/index.html', records=records)
 
 
