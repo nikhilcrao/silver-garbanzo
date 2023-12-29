@@ -3,8 +3,21 @@
 {% import "bootstrap/wtf.html" as wtf %}
 {% import "bootstrap/utils.html" as utils %}
 
+
 {% block content %}
 {{ utils.flashed_messages(dismissible=True) }}
+<div class="container">
+  <table class="table table-hover">
+    <tr>
+      <td>Name</td>
+      <td>{{ category.name }}</td>
+    </tr>
+    <tr>
+      <td>Parent ID</td>
+      <td>{{ category.parent_id }}</td>
+    </tr>
+</table>
+</div>
 <div class="container">
   {{ wtf.quick_form(form) }}
 </div>

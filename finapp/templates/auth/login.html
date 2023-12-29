@@ -1,6 +1,14 @@
 {% extends "bootstrap/base.html" %}
+
 {% import "bootstrap/wtf.html" as wtf %}
+{% import "bootstrap/utils.html" as utils %}
 
 {% block content %}
-{{ wtf.quick_form(form) }}
+{{ utils.flashed_messages(dismissible=True) }}
+<div class="container">
+  {{ wtf.quick_form(form) }}
+</div>
+<div class="container">
+  <a href="{{ url_for('auth.register') }}">Sign up</a>
+</div>
 {% endblock %}

@@ -17,6 +17,7 @@ wtforms-validators = "^1.0.0"
 flask-login = "^0.6.3"
 flask-wtf = "^1.2.1"
 flask-bootstrap = "^3.3.7.1"
+python-slugify = "^8.0.1"
 
 [tool.pyright]
 # https://github.com/microsoft/pyright/blob/main/docs/configuration.md

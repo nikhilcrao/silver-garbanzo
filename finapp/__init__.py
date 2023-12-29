@@ -1,6 +1,6 @@
 import os
 
-from flask import Flask
+from flask import Flask, redirect, url_for
 from flask_bootstrap import Bootstrap
 
 
@@ -31,13 +31,16 @@ def create_app(test_config=None):
     from . import auth
     auth.init_app(app)
     app.register_blueprint(auth.bp)
+
+    from . import category
+    app.register_blueprint(category.bp)
     
     @app.cli.command('reset-db')
     def reset_db():
         database.reset_db(app)
-    
+
     @app.route('/')
     def index():
-        return 'hello world'
+        return redirect(url_for('category.index'))
 
     return app
