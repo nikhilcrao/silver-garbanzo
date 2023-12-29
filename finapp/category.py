@@ -19,13 +19,15 @@ def get_categories():
   ).order_by('name')
 
 
-def get_parent_id_choices(exclude_ids=[]):
-  categories = get_categories().filter_by(parent_id=0)
-  parent_id_choices = [(0, 'None')]
+def get_category_id_choices(roots_only=False, exclude_ids=[]):
+  categories = get_categories()
+  if roots_only:
+    categories = categories.filter_by(parent_id=0)
+  category_id_choices = [(0, 'None')]
   for category in categories:
     if category.id not in exclude_ids:
-      parent_id_choices.append((category.id, category.name))
-  return parent_id_choices
+      category_id_choices.append((category.id, category.name))
+  return category_id_choices
 
 
 @bp.route('/')
@@ -38,7 +40,7 @@ def index():
 @login_required
 def add():
   form = CategoryAddEditForm(user_id=current_user.id)
-  form.parent_id.choices = get_parent_id_choices()
+  form.parent_id.choices = get_category_id_choices(roots_only=True)
   
   if form.validate_on_submit():
     category = Category()
@@ -61,7 +63,7 @@ def add():
 def edit(id):
   category = Category.query.get_or_404(id)
   form = CategoryAddEditForm(obj=category)
-  form.parent_id.choices = get_parent_id_choices(exclude_ids=[id])
+  form.parent_id.choices = get_category_id_choices(roots_only=True, exclude_ids=[id])
 
   if form.validate_on_submit():
     form.populate_obj(category)

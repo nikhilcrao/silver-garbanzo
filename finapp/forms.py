@@ -43,3 +43,17 @@ class MerchantAddEditForm(FlaskForm):
 class MerchantDeleteForm(FlaskForm):
   id = IntegerField(label='', validators=[Optional()], widget=HiddenInput())
   submit = SubmitField('Submit')
+
+
+class RuleAddEditForm(FlaskForm):
+  id = IntegerField(label='', validators=[Optional()], widget=HiddenInput())
+  user_id = HiddenField(validators=[Optional()])
+  keywords = StringField('Keywords')
+  merchant_id = SelectField('Merchant')
+  category_id = SelectField('Category')
+  submit = SubmitField('Submit')
+
+
+class RuleDeleteForm(FlaskForm):
+  id = IntegerField(label='', validators=[Optional()], widget=HiddenInput())
+  submit = SubmitField('Submit')

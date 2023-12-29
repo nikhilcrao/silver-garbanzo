@@ -37,6 +37,9 @@ def create_app(test_config=None):
 
     from . import merchant
     app.register_blueprint(merchant.bp)
+
+    from . import rule
+    app.register_blueprint(rule.bp)
     
     @app.cli.command('reset-db')
     def reset_db():

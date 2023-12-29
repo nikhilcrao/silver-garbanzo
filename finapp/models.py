@@ -28,5 +28,15 @@ class Merchant(db.Model):
   
   id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
   name: Mapped[str] = mapped_column(String, nullable=False)
-  user_id: Mapped[Optional[str]] = mapped_column(String, ForeignKey('users.id'))
+  user_id: Mapped[str] = mapped_column(String, ForeignKey('users.id'), nullable=False)
   hash: Mapped[str] = mapped_column(String, nullable=False, unique=True)
+
+
+class Rule(db.Model):
+  __tablename__ = 'rules'
+
+  id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+  user_id: Mapped[str] = mapped_column(String, ForeignKey('users.id'), nullable=False)
+  keywords: Mapped[str] = mapped_column(String, nullable=False)
+  merchant_id: Mapped[Optional[int]] = mapped_column(Integer, ForeignKey('merchants.id'))
+  category_id: Mapped[Optional[int]] = mapped_column(Integer, ForeignKey('categories.id'))

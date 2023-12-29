@@ -1,0 +1,46 @@
+{% extends "bootstrap/base.html" %}
+{% import "bootstrap/utils.html" as utils %}
+
+{% block title %}
+Category
+{% endblock %}
+
+{% block content %}
+{{ utils.flashed_messages(dismissible=True) }}
+
+<div class="container">
+  <div class="row">
+    <table class="table table-hover">
+      <tr>
+        <th></th>
+        <th></th>
+        <th>Keywords</th>
+        <th>Merchant</th>
+        <th>Category</th>
+      </tr>
+      {% for rule in rules %}
+      <tr>
+        <td>
+          <a href="{{ url_for('rule.edit', id=rule.id) }}" class="btn btn-light">
+            Edit
+          </a>
+        </td>
+        <td>
+          <a href="{{ url_for('rule.delete', id=rule.id) }}" class="btn btn-danger">
+            Delete
+          </a>
+        </td>
+        <td>{{ rule.keywords }}</td>
+        <td>{{ rule.merchant_id }}</td>
+        <td>{{ rule.category_id }}</td>
+      </tr>
+      {% endfor %}
+    </table>
+  </div>
+  <div class="row">
+    <ul>
+      <li><a href="{{ url_for('rule.add') }}">Add rule</a></li>
+    </ul>
+  </div>
+</div>
+{% endblock %}

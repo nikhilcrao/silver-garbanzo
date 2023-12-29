@@ -4,16 +4,28 @@ from .models import Merchant, User
 
 from flask import Blueprint, render_template, flash, redirect, url_for, request
 from flask_login import current_user, login_required
-from slugify import slugify
-from sqlalchemy import or_
 
 
 bp = Blueprint('merchant', __name__, url_prefix='/merchant')
 
+
+def get_merchants():
+  return Merchant.query.filter_by(user_id=current_user.id).order_by('name')
+
+
+def get_merchant_id_choices(exclude_ids=[]):
+  merchants = get_merchants()
+  merchant_id_choices = [(0, 'None')]
+  for merchant in merchants:
+    if merchant.id not in exclude_ids:
+      merchant_id_choices.append((merchant.id, merchant.name))
+  return merchant_id_choices
+  
+
 @bp.route('/')
 @login_required
 def index():
-  merchants = Merchant.query.order_by('name').all()
+  merchants = get_merchants()
   return render_template('merchant/index.html', merchants=merchants)
 
 
