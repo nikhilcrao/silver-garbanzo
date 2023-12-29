@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
 from wtforms import (
-  StringField, PasswordField, SubmitField, HiddenField, SelectField, IntegerField
+  StringField, PasswordField, SubmitField, HiddenField, SelectField, IntegerField, FloatField, DateTimeField, FileField
 )
 from wtforms.validators import Optional
 from wtforms.widgets import HiddenInput
@@ -56,4 +56,27 @@ class RuleAddEditForm(FlaskForm):
 
 class RuleDeleteForm(FlaskForm):
   id = IntegerField(label='', validators=[Optional()], widget=HiddenInput())
+  submit = SubmitField('Submit')
+
+
+class RecordAddEditForm(FlaskForm):
+  id = IntegerField(label='', validators=[Optional()], widget=HiddenInput())
+  hash = HiddenField(validators=[Optional()])
+  user_id = HiddenField(validators=[Optional()])
+  description = StringField('Description')
+  notes = StringField('Notes')
+  amount = FloatField('Amount')
+  date = DateTimeField('Datetime')
+  merchant_id = SelectField('Merchant')
+  category_id = SelectField('Category')
+  submit = SubmitField('Submit')
+
+
+class RecordDeleteForm(FlaskForm):
+  id = IntegerField(label='', validators=[Optional()], widget=HiddenInput())
+  submit = SubmitField('Submit')
+
+
+class RecordUploadForm(FlaskForm):
+  files = FileField('File')
   submit = SubmitField('Submit')

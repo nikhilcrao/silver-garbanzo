@@ -40,13 +40,16 @@ def create_app(test_config=None):
 
     from . import rule
     app.register_blueprint(rule.bp)
-    
+
+    from . import record
+    app.register_blueprint(record.bp)
+
     @app.cli.command('reset-db')
     def reset_db():
         database.reset_db(app)
 
     @app.route('/')
     def index():
-        return redirect(url_for('category.index'))
+        return redirect(url_for('record.index'))
 
     return app
