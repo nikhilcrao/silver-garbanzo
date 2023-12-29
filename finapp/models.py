@@ -21,3 +21,12 @@ class Category(db.Model):
   parent_id: Mapped[Optional[int]] = mapped_column(Integer, ForeignKey('categories.id'))
   user_id: Mapped[Optional[str]] = mapped_column(String, ForeignKey('users.id'))
   hash: Mapped[str] = mapped_column(String, nullable=False, unique=True)
+
+
+class Merchant(db.Model):
+  __tablename__ = 'merchants'
+  
+  id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+  name: Mapped[str] = mapped_column(String, nullable=False)
+  user_id: Mapped[Optional[str]] = mapped_column(String, ForeignKey('users.id'))
+  hash: Mapped[str] = mapped_column(String, nullable=False, unique=True)

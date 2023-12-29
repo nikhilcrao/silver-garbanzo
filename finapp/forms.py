@@ -30,3 +30,16 @@ class CategoryAddEditForm(FlaskForm):
 class CategoryDeleteForm(FlaskForm):
   id = IntegerField(label='', validators=[Optional()], widget=HiddenInput())
   submit = SubmitField('Submit')
+
+
+class MerchantAddEditForm(FlaskForm):
+  id = IntegerField(label='', validators=[Optional()], widget=HiddenInput())
+  user_id = HiddenField(validators=[Optional()])
+  name = StringField('Name')
+  submit = SubmitField('Submit')
+  hash = HiddenField(validators=[Optional()])
+
+
+class MerchantDeleteForm(FlaskForm):
+  id = IntegerField(label='', validators=[Optional()], widget=HiddenInput())
+  submit = SubmitField('Submit')
