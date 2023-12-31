@@ -36,23 +36,36 @@ def import_transactions(filename):
 @bp.route('/')
 @login_required
 def index():
-  records = Record.query.filter_by(user_id=current_user.id).order_by('id')
-  if 'category_id' in request.args:
-    category_id = request.args.get('category_id', type=int)
-    records = records.filter_by(category_id=category_id)
-  if 'merchant_id' in request.args:
-    merchant_id = request.args.get('merchant_id', type=int)
-    records = records.filter_by(merchant_id=merchant_id)
-  if 'date_from' in request.args:
-    date_from = datetime.datetime.strptime(request.args.get('date_from'), '%Y-%m-%d')
-    records = records.filter(Record.date >= date_from)
-  if 'date_to' in request.args:
-    date_to = datetime.datetime.strptime(request.args.get('date_to'), '%Y-%m-%d')
-    records = records.filter(Record.date <= date_to)
+  items = db.session.query(Record, Merchant, Category).filter_by(user_id=current_user.id)
+  items = items.join(Merchant, Record.merchant_id == Merchant.id, isouter=True)
+  items = items.join(Category, Record.category_id == Category.id, isouter=True)
+  args = {}
+
+  if 'sort_by' in request.args:
+    args['sort_by'] = request.args.get('sort_by')
+    for clause in args['sort_by'].split(','):
+      items = items.order_by(getattr(Record, clause))
+
+  if 'filter_by' in request.args:
+    args['filter_by'] = request.args.get('filter_by')
+    for clause in args['filter_by'].split(','):
+      key, val = clause.split(':')
+      if key in ('category_id', 'merchant_id'):
+        items = items.filter(getattr(Record, key) == int(val))
+      elif key in ('date_from'):
+        date_from = datetime.datetime.strptime(request.args.get('date_from'), '%Y-%m-%d')
+        items = items.filter(Record.date >= date_from)
+      elif key in ('date_to'):
+        date_to = datetime.datetime.strptime(request.args.get('date_to'), '%Y-%m-%d')
+        items = items.filter(Record.date <= date_to)
+
   if 'search' in request.args:
-    search = request.args.get('search')
-    records = records.filter(Record.description.ilike('%' + search + '%'))
-  return render_template('record/index.html', records=records)
+    args['search'] = request.args.get('search')
+    items = items.filter(Record.description.ilike('%' + args['search'] + '%'))
+
+  page = request.args.get('page', 1, type=int)
+  items = items.paginate(page=page, per_page=50)
+  return render_template('record/index.html', items=items, args=args)
 
 
 @bp.route('/add' , methods=['GET', 'POST'])
