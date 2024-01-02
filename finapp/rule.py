@@ -27,6 +27,7 @@ def add_merchant(name):
     
   return merchant.id
 
+
 def add_category(name):
   category = Category()
   category.name = name
@@ -61,12 +62,10 @@ def add():
   form = RuleAddEditForm(user_id=current_user.id)
   form.category_id.choices = get_category_id_choices()
   form.merchant_id.choices = get_merchant_id_choices()
-  form.keywords.data = keywords
   
   if form.validate_on_submit():
     rule = Rule()
     form.populate_obj(rule)
-
 
     try:
       print(form.data)
@@ -81,7 +80,8 @@ def add():
     except:
       flash(f"Rule could not be added.", 'danger')
       db.session.rollback()
-    
+
+  form.keywords.data = keywords
   return render_template('rule/add.html', form=form)
 
 
