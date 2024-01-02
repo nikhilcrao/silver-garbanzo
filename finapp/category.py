@@ -11,22 +11,37 @@ bp = Blueprint('category', __name__, url_prefix='/category')
 
 
 def get_category_id_choices(roots_only=False, exclude_ids=[]):
-  categories = Category.query.filter(
+  all_categories = Category.query.filter(
     or_(
       Category.user_id == current_user.id,
       Category.user_id == None,
     )
-  ).order_by('id')
+  )
 
-  if roots_only:
-    categories = categories.filter_by(parent_id=0)
+  category_id_choices = []
+  parent_category_names = {}
   
-  category_id_choices = [(0, 'None')]
-  for category in categories:
+  parent_categories = all_categories.filter(Category.parent_id == 0)
+  for category in parent_categories:
+    parent_category_names[category.id] = category.name
     if category.id not in exclude_ids:
       category_id_choices.append((category.id, category.name))
 
-  return category_id_choices
+  if roots_only:
+    category_id_choices.sort(key=lambda x: x[1])
+    return [(0, 'None')] + category_id_choices  
+  
+  for category in all_categories:
+    if category.parent_id == 0:
+      continue  # skip parents
+    if category.id not in exclude_ids:
+      category_id_choices.append(
+        (category.id,
+         f"{parent_category_names[category.parent_id]} / {category.name}")
+      )
+
+  category_id_choices.sort(key=lambda x: x[1])
+  return [(0, 'None')] + category_id_choices
 
 
 @bp.route('/')
