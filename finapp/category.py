@@ -4,29 +4,28 @@ from .models import Category, User
 
 from flask import Blueprint, render_template, flash, redirect, url_for, request
 from flask_login import current_user, login_required
-from slugify import slugify
 from sqlalchemy import or_
 
 
 bp = Blueprint('category', __name__, url_prefix='/category')
 
-def get_categories():
-  return Category.query.filter(
+
+def get_category_id_choices(roots_only=False, exclude_ids=[]):
+  categories = Category.query.filter(
     or_(
       Category.user_id == current_user.id,
       Category.user_id == None,
     )
   ).order_by('id')
 
-
-def get_category_id_choices(roots_only=False, exclude_ids=[]):
-  categories = get_categories()
   if roots_only:
     categories = categories.filter_by(parent_id=0)
+  
   category_id_choices = [(0, 'None')]
   for category in categories:
     if category.id not in exclude_ids:
       category_id_choices.append((category.id, category.name))
+
   return category_id_choices
 
 
@@ -37,12 +36,6 @@ def index():
     or_(Category.user_id == current_user.id,
         Category.user_id == None)
     ).all()
-  # nested_categories = {}
-  # for category in all_categories:
-  #   if category.parent_id == 0:
-  #     nested_categories[category.id] = (category, [])
-  #   else:
-  #     nested_categories[category.parent_id][1].append(category)
   return render_template('category/index.html', categories=categories, Category=Category)
 
 

@@ -49,8 +49,10 @@ class RuleAddEditForm(FlaskForm):
   id = IntegerField(label='', validators=[Optional()], widget=HiddenInput())
   user_id = HiddenField(validators=[Optional()])
   keywords = StringField('Keywords')
-  merchant_id = SelectField('Merchant')
-  category_id = SelectField('Category')
+  merchant_id = SelectField('[Existing] Merchant', validators=[Optional()])
+  new_merchant_name = StringField('[New] Merchant Name', validators=[Optional()])
+  category_id = SelectField('Category', validators=[Optional()])
+  new_category_name = StringField('New Category Name', validators=[Optional()])
   submit = SubmitField('Submit')
 
 
