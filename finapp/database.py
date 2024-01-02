@@ -1,4 +1,5 @@
 import click
+import os
 
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
@@ -72,3 +73,16 @@ def init_category(app):
         
       db.session.commit()
   print('Init category')
+
+
+def init_records(app):
+  from .record import import_transactions
+  for file in os.listdir(app.config['UPLOAD_FOLDER']):
+    filename = os.path.join(app.config['UPLOAD_FOLDER'], file)
+    count = -1
+    if filename.endswith('.csv'):
+      count = import_transactions(filename, 'cc', user_id='nikhilcrao')
+    elif filename.endswith('.txt'):
+      count = import_transactions(filename, 'acct', user_id='nikhilcrao')
+    print(f"Imported {count} records from {filename}")
+      

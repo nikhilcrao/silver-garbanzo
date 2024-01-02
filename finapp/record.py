@@ -22,11 +22,12 @@ csrf = CSRFProtect()
 bp = Blueprint('record', __name__, url_prefix='/record')
 
 
-def import_transactions(filename, type):
+def import_transactions(filename, type, user_id=None):
   records = ImportRecords(filename, type)
+  record_user_id = user_id if user_id else current_user.id
   for record_dict in records:
     record = Record(
-      user_id=current_user.id,
+      user_id=record_user_id,
       amount=record_dict['amount'],
       date=datetime.datetime.strptime(record_dict['date'], '%Y-%m-%d %H:%M:%S'),
       description=record_dict['merchant'],

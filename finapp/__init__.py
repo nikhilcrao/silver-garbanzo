@@ -58,6 +58,10 @@ def create_app(test_config=None):
     @app.cli.command('init-category')
     def init_category():
         database.init_category(app)
+
+    @app.cli.command('init-records')
+    def init_records():
+        database.init_records(app)
     
     @app.route('/')
     def index():
