@@ -8,7 +8,7 @@ from .category import get_category_id_choices
 from .merchant import get_merchant_id_choices
 from .recordparser import ImportRecords
 
-from flask import Blueprint, render_template, flash, redirect, url_for, request, current_app
+from flask import Blueprint, render_template, flash, redirect, url_for, request, current_app, g
 from flask_wtf.csrf import CSRFProtect
 from flask_login import current_user, login_required
 from sqlalchemy import desc
@@ -91,7 +91,7 @@ def index():
   page = request.args.get('page', 1, type=int)
   records = records.paginate(page=page, per_page=50)
 
-  return render_template('record/index.html', records=records, form=form, Record=Record)
+  return render_template('record/index.html', records=records, form=form, Record=Record, uncategorized_count=g.get('uncategorized', 0))
 
 
 @bp.route('/add' , methods=['GET', 'POST'])

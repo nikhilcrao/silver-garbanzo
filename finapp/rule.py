@@ -4,7 +4,7 @@ from .models import Merchant, User, Category, Rule, Record
 from .category import get_category_id_choices
 from .merchant import get_merchant_id_choices
 
-from flask import Blueprint, render_template, flash, redirect, url_for, request
+from flask import Blueprint, render_template, flash, redirect, url_for, request, g
 from flask_login import current_user, login_required
 
 
@@ -147,6 +147,7 @@ def apply():
     try:
       db.session.commit()
       flash(f"Applied rules successfully.")
+      g['uncategorized'] = Record.query.filter(Record.category_id == 0).count()
       return redirect(url_for('rule.index'))
     except:
       flash(f"Error applying rules.", 'danger')
