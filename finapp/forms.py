@@ -59,6 +59,10 @@ class RuleDeleteForm(FlaskForm):
   submit = SubmitField('Submit')
 
 
+class RuleApplyForm(FlaskForm):
+  submit = SubmitField('Submit')
+
+
 class RecordAddEditForm(FlaskForm):
   id = IntegerField(label='', validators=[Optional()], widget=HiddenInput())
   hash = HiddenField(validators=[Optional()])

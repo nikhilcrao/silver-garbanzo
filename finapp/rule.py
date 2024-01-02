@@ -1,6 +1,6 @@
 from .database import db
-from .forms import RuleAddEditForm, RuleDeleteForm
-from .models import Merchant, User, Category, Rule
+from .forms import RuleAddEditForm, RuleDeleteForm, RuleApplyForm
+from .models import Merchant, User, Category, Rule, Record
 from .category import get_category_id_choices
 from .merchant import get_merchant_id_choices
 
@@ -24,7 +24,7 @@ def add():
   keywords = ''
   if 'keywords' in request.args:
     keywords = request.args['keywords']
-    
+
   form = RuleAddEditForm(user_id=current_user.id)
   form.category_id.choices = get_category_id_choices()
   form.merchant_id.choices = get_merchant_id_choices()
@@ -83,3 +83,28 @@ def delete(id):
       db.session.rollback()
 
   return render_template('rule/delete.html', rule=rule, form=form)
+
+
+@bp.route('/apply', methods=['GET', 'POST'])
+def apply():
+  form = RuleApplyForm()
+  rules = Rule.query.filter_by(user_id=current_user.id).order_by('id').all()
+
+  if form.validate_on_submit(): 
+    for rule in rules:
+      records = Record.query.filter(Record.description.ilike('%' + rule.keywords + '%'))
+      for record in records:
+        if rule.category_id != 0:
+          record.category_id = rule.category_id
+        if rule.merchant_id != 0:
+          record.merchant_id = rule.merchant_id
+
+    try:
+      db.session.commit()
+      flash(f"Applied rules successfully.")
+      return redirect(url_for('rule.index'))
+    except:
+      flash(f"Error applying rules.", 'danger')
+      db.session.rollback()
+
+  return render_template('rule/apply.html', rules=rules, form=form)

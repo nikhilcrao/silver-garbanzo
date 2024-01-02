@@ -44,6 +44,8 @@ def index():
   records = db.session.query(Record).filter_by(user_id=current_user.id).order_by('id')
   args = {}
 
+  search_form = RecordSearchForm()
+
   if 'sort_by' in request.args:
     args['sort_by'] = request.args.get('sort_by')
     for clause in args['sort_by'].split(','):
@@ -62,7 +64,6 @@ def index():
         date_to = datetime.datetime.strptime(request.args.get('date_to'), '%Y-%m-%d')
         records = records.filter(Record.date <= date_to)
 
-  search_form = RecordSearchForm()
   if 'search' in request.args:
     args['search'] = request.args.get('search')
     search_form.search.data = args['search']

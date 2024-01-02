@@ -1,4 +1,6 @@
-{% import "bootstrap5/utils.html" as utils %}
+
+{% from "bootstrap5/utils.html" import render_messages %}
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -17,8 +19,82 @@
     {% endblock %}
   </head>
   <body>
+    {% block navbar %}
+    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="#">FinApp</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+      </div>
+      
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav me-auto m-2 p-3 mb-lg-0">
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Records</a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item"
+                     href="{{ url_for('record.index') }}">List Records</a>
+              </li>
+              <li><a class="dropdown-item"
+                     href="{{ url_for('record.upload') }}">Upload</a>
+              </li>
+            </ul>
+          </li>
+
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Category</a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item"
+                     href="{{ url_for('category.index') }}">List Categories</a>
+              </li>
+              <li><a class="dropdown-item"
+                     href="{{ url_for('category.add') }}">Add Category</a>
+              </li>
+            </ul>
+          </li>
+
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Merchant</a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item"
+                     href="{{ url_for('merchant.index') }}">List Merchants</a>
+              </li>
+              <li><a class="dropdown-item"
+                     href="{{ url_for('merchant.add') }}">Add Merchant</a>
+              </li>
+            </ul>
+          </li>
+
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Rule</a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item"
+                     href="{{ url_for('rule.index') }}">List Rules</a>
+              </li>
+              <li><a class="dropdown-item"
+                     href="{{ url_for('rule.add') }}">Add Rule</a>
+              </li>
+              <li><a class="dropdown-item"
+                     href="{{ url_for('rule.apply') }}">Apply Rules</a>
+              </li>
+            </ul>
+          </li>
+          
+          <li class="nav-item">
+            {% if current_user.is_authenticated %}
+            <a class="nav-link" href="{{ url_for('auth.logout') }}">Logout</a>
+            {% else %}
+            <a class="nav-link" href="{{ url_for('auth.login') }}">Login</a>
+            {% endif %}
+          </li>
+        </ul>
+      </div>
+    </nav>
+    {% endblock %}
+    
     {% block alerts %}
-    {{ utils.render_messages(dismissible=True) }}
+    {{ render_messages(dismissible=True) }}
     {% endblock %}
 
     {% block content %}{% endblock %}
