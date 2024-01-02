@@ -22,8 +22,8 @@ csrf = CSRFProtect()
 bp = Blueprint('record', __name__, url_prefix='/record')
 
 
-def import_transactions(filename):
-  records = ImportRecords(filename)
+def import_transactions(filename, type):
+  records = ImportRecords(filename, type)
   for record_dict in records:
     record = Record(
       user_id=current_user.id,
@@ -171,7 +171,7 @@ def upload():
         secure_filename(file.filename))
       file.save(filename)
       try:
-        count = import_transactions(filename)
+        count = import_transactions(filename, request.form['type'])
         flash(f"Successfully imported {count} records.")        
         return redirect(url_for('record.index'))
       except:

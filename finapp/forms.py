@@ -85,6 +85,7 @@ class RecordDeleteForm(FlaskForm):
 
 class RecordUploadForm(FlaskForm):
   files = FileField('File')
+  type = SelectField('Type', choices=[('cc', 'Credit Card'), ('acct', 'Account')])
   submit = SubmitField('Submit')
 
 
