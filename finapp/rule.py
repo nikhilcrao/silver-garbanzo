@@ -76,7 +76,7 @@ def add():
       db.session.add(rule)
       db.session.commit()
       flash(f"New rule added successfully.")
-      return redirect(url_for('rule.index'))
+      return redirect(url_for('record.index'))
     except:
       flash(f"Rule could not be added.", 'danger')
       db.session.rollback()
