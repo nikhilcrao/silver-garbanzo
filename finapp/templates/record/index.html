@@ -12,14 +12,14 @@
     <h2>Records</h2>
   </div>
   <div class="row">
-    <div class="col-md-8">
+    <div class="col-md-12">
       <form class="form-inline" method="GET" action="{{ url_for('record.index') }}">
         {{ render_form_row([form.search, form.submit], form_type='inline') }}
       </form>
     </div>
   </div>
   <div class="row justify-content-center mt-2">
-    <div class="col-md-auto">
+    <div class="col-md-12">
       {{ render_table(records,
                       titles=[
                         ('id', '#'),
