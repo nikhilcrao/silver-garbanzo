@@ -48,7 +48,7 @@ def add():
   if form.validate_on_submit():
     category = Category()
     form.populate_obj(category)
-    category.hash = str(hash(form.name.data + form.user_id.data))
+    category.hash = str(hash(form.name.data + str(form.user_id.data)))
     try:      
       db.session.add(category)
       db.session.commit()
@@ -70,7 +70,7 @@ def edit(id):
 
   if form.validate_on_submit():
     form.populate_obj(category)
-    category.hash = str(hash(form.name.data + form.user_id.data))
+    category.hash = str(hash(form.name.data + str(form.user_id.data)))
     try:
       db.session.commit()
       flash(f"Category {form.name.data} updated successfully.")

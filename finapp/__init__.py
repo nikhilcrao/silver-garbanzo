@@ -55,6 +55,10 @@ def create_app(test_config=None):
     def reset_db():
         database.reset_db(app)
 
+    @app.cli.command('init-category')
+    def init_category():
+        database.init_category(app)
+    
     @app.route('/')
     def index():
         return redirect(url_for('record.index'))
