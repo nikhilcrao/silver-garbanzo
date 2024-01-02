@@ -11,7 +11,9 @@ from .recordparser import ImportRecords
 from flask import Blueprint, render_template, flash, redirect, url_for, request, current_app
 from flask_wtf.csrf import CSRFProtect
 from flask_login import current_user, login_required
+from sqlalchemy import desc
 from werkzeug.utils import secure_filename
+
 
 
 csrf = CSRFProtect()
@@ -37,41 +39,58 @@ def import_transactions(filename):
   return len(records)
 
 
+def parse_search_term(term, records):
+  tokens = term.split()
+
+  sort_by = ''
+  desc_filter = []
+  
+  for token in tokens:
+    if token.startswith('category_id:'):
+      category_id = int(token.split(':')[1])
+      records = records.filter(Record.category_id == category_id)
+    elif token.startswith('merchant_id:'):
+      merchant_id = int(token.split(':')[1])
+      records = records.filter(Record.merchant_id == merchant_id)
+    elif token.startswith('date_from:'):
+      date_from = datetime.datetime.strptime(token.split(':')[1], '%Y-%m-%d')
+      records = records.filter(Record.date >= date_from)
+    elif token.startswith('date_to:'):
+      date_to = datetime.datetime.strptime(token.split(':')[1], '%Y-%m-%d')
+      records = records.filter(Record.date <= date_to)
+    elif token.startswith('sort:'):
+      sort_by = token.split(':')[1]
+      if token.endswith(',desc'):
+        sort_by = desc(sort_by.split(',')[0])
+    else:
+      desc_filter.append(token)
+      
+  if len(desc_filter) > 0:
+    records = records.filter(
+      Record.description.ilike('%' + ' '.join(desc_filter) + '%'))
+
+  if sort_by != '':
+    records = records.order_by(sort_by)
+  
+  return records
+
+
 @bp.route('/')
 @login_required
 @csrf.exempt
 def index():
-  records = db.session.query(Record).filter_by(user_id=current_user.id).order_by('id')
+  records = db.session.query(Record).filter_by(user_id=current_user.id)
   args = {}
 
-  search_form = RecordSearchForm()
-
-  if 'sort_by' in request.args:
-    args['sort_by'] = request.args.get('sort_by')
-    for clause in args['sort_by'].split(','):
-      records = records.order_by(getattr(Record, clause))
-
-  if 'filter_by' in request.args:
-    args['filter_by'] = request.args.get('filter_by')
-    for clause in args['filter_by'].split(','):
-      key, val = clause.split(':')
-      if key in ('category_id', 'merchant_id'):
-        records = records.filter(getattr(Record, key) == int(val))
-      elif key in ('date_from'):
-        date_from = datetime.datetime.strptime(request.args.get('date_from'), '%Y-%m-%d')
-        records = records.filter(Record.date >= date_from)
-      elif key in ('date_to'):
-        date_to = datetime.datetime.strptime(request.args.get('date_to'), '%Y-%m-%d')
-        records = records.filter(Record.date <= date_to)
-
+  form = RecordSearchForm()
   if 'search' in request.args:
-    args['search'] = request.args.get('search')
-    search_form.search.data = args['search']
-    records = records.filter(Record.description.ilike('%' + args['search'] + '%'))
+    form.search.data = request.args['search']
+    records = parse_search_term(request.args['search'], records)
 
   page = request.args.get('page', 1, type=int)
   records = records.paginate(page=page, per_page=50)
-  return render_template('record/index.html', records=records, args=args, Record=Record, form=search_form)
+
+  return render_template('record/index.html', records=records, form=form, Record=Record)
 
 
 @bp.route('/add' , methods=['GET', 'POST'])

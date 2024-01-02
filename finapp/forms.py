@@ -90,4 +90,4 @@ class RecordUploadForm(FlaskForm):
 
 class RecordSearchForm(FlaskForm):
   search = StringField('Search')
-  submit = SubmitField('Submit')
+  submit = SubmitField('Search')
