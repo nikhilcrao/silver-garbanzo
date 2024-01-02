@@ -19,7 +19,7 @@
     </div>
   </div>
   <div class="row justify-content-center mt-2">
-    <div class="col-md">
+    <div class="col-md-auto">
       {{ render_table(records,
                       titles=[
                         ('id', '#'),
@@ -37,7 +37,7 @@
                       ],
                       model=Record,
                       edit_url=('record.edit', [('id', ':id'), ('next', request.path)]),
-                      new_url='record.add') }}
+                    ) }}
       {{ records.first }} - {{ records.last }} of {{ records.total }}
       {{ render_pagination(records) }}
     </div>
