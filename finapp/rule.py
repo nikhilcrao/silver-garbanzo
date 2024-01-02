@@ -15,15 +15,20 @@ bp = Blueprint('rule', __name__, url_prefix='/rule')
 @login_required
 def index():
   rules = Rule.query.filter_by(user_id=current_user.id).order_by('id').all()
-  return render_template('rule/index.html', rules=rules)
+  return render_template('rule/index.html', rules=rules, Rule=Rule)
 
 
 @bp.route('/add' , methods=['GET', 'POST'])
 @login_required
 def add():
+  keywords = ''
+  if 'keywords' in request.args:
+    keywords = request.args['keywords']
+    
   form = RuleAddEditForm(user_id=current_user.id)
   form.category_id.choices = get_category_id_choices()
   form.merchant_id.choices = get_merchant_id_choices()
+  form.keywords.data = keywords
   
   if form.validate_on_submit():
     rule = Rule()

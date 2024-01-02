@@ -1,46 +1,27 @@
-{% extends "bootstrap/base.html" %}
-{% import "bootstrap/utils.html" as utils %}
+{% extends "base.html" %}
 
-{% block title %}
-Category
-{% endblock %}
+{% from 'bootstrap5/table.html' import render_table %}
+
+{% block title %}Merchants{% endblock %}
 
 {% block content %}
-{{ utils.flashed_messages(dismissible=True) }}
-
-<div class="container">
-  <div class="row">
-    <table class="table table-hover">
-      <tr>
-        <th></th>
-        <th></th>
-        <th>Keywords</th>
-        <th>Merchant</th>
-        <th>Category</th>
-      </tr>
-      {% for rule in rules %}
-      <tr>
-        <td>
-          <a href="{{ url_for('rule.edit', id=rule.id) }}" class="btn btn-light">
-            Edit
-          </a>
-        </td>
-        <td>
-          <a href="{{ url_for('rule.delete', id=rule.id) }}" class="btn btn-danger">
-            Delete
-          </a>
-        </td>
-        <td>{{ rule.keywords }}</td>
-        <td>{{ rule.merchant_id }}</td>
-        <td>{{ rule.category_id }}</td>
-      </tr>
-      {% endfor %}
-    </table>
-  </div>
-  <div class="row">
-    <ul>
-      <li><a href="{{ url_for('rule.add') }}">Add rule</a></li>
-    </ul>
+<div class="container mt-5">
+  <div class="row justify-content-center mt-2">
+    <div class="col-md-6">
+      <h2>Rules</h2>
+      {{ render_table(rules,
+                      titles=[
+                        ('id', '#'),
+                        ('keywords', 'Keywords'),
+                        ('merchant_id', 'Merchant'),
+                        ('category_id', 'Category'),
+                      ],
+                      show_actions=True,
+                      model=Rule,
+                      edit_url=('rule.edit', [('id', ':id')]),
+                      delete_url=('rule.delete', [('id', ':id')]),
+                      new_url='rule.add') }}
+    </div>
   </div>
 </div>
 {% endblock %}

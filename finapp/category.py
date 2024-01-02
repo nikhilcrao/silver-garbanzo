@@ -16,7 +16,7 @@ def get_categories():
       Category.user_id == current_user.id,
       Category.user_id == None,
     )
-  ).order_by('name')
+  ).order_by('id')
 
 
 def get_category_id_choices(roots_only=False, exclude_ids=[]):
@@ -33,7 +33,17 @@ def get_category_id_choices(roots_only=False, exclude_ids=[]):
 @bp.route('/')
 @login_required
 def index():
-  return render_template('category/index.html', categories=get_categories())
+  categories = Category.query.filter(
+    or_(Category.user_id == current_user.id,
+        Category.user_id == None)
+    ).all()
+  # nested_categories = {}
+  # for category in all_categories:
+  #   if category.parent_id == 0:
+  #     nested_categories[category.id] = (category, [])
+  #   else:
+  #     nested_categories[category.parent_id][1].append(category)
+  return render_template('category/index.html', categories=categories, Category=Category)
 
 
 @bp.route('/add' , methods=['GET', 'POST'])

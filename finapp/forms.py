@@ -80,3 +80,8 @@ class RecordDeleteForm(FlaskForm):
 class RecordUploadForm(FlaskForm):
   files = FileField('File')
   submit = SubmitField('Submit')
+
+
+class RecordSearchForm(FlaskForm):
+  search = StringField('Search')
+  submit = SubmitField('Submit')

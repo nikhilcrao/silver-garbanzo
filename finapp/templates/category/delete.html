@@ -1,24 +1,17 @@
-{% extends "bootstrap/base.html" %}
+{% extends "base.html" %}
 
-{% import "bootstrap/wtf.html" as wtf %}
-{% import "bootstrap/utils.html" as utils %}
+{% from "bootstrap5/form.html" import render_form %}
 
+{% block title %}Delete Category{% endblock %}
 
 {% block content %}
-{{ utils.flashed_messages(dismissible=True) }}
-<div class="container">
-  <table class="table table-hover">
-    <tr>
-      <td>Name</td>
-      <td>{{ category.name }}</td>
-    </tr>
-    <tr>
-      <td>Parent ID</td>
-      <td>{{ category.parent_id }}</td>
-    </tr>
-</table>
-</div>
-<div class="container">
-  {{ wtf.quick_form(form) }}
+<div class="container mt-5">
+  <div class="row justify-content-center mt-2">
+    <div class="col-md-6">
+      <h2>Delete Category</h2>
+      <p>Are you sure you want to delete {{ category.name }}?</p>
+      {{ render_form(form) }}
+    </div>
+  </div>
 </div>
 {% endblock %}

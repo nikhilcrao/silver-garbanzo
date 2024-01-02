@@ -2,15 +2,19 @@ import os
 import datetime
 
 from .database import db
-from .forms import RecordAddEditForm, RecordDeleteForm, RecordUploadForm
+from .forms import RecordAddEditForm, RecordDeleteForm, RecordUploadForm, RecordSearchForm
 from .models import Merchant, User, Category, Record
 from .category import get_category_id_choices
 from .merchant import get_merchant_id_choices
 from .recordparser import ImportRecords
 
 from flask import Blueprint, render_template, flash, redirect, url_for, request, current_app
+from flask_wtf.csrf import CSRFProtect
 from flask_login import current_user, login_required
 from werkzeug.utils import secure_filename
+
+
+csrf = CSRFProtect()
 
 
 bp = Blueprint('record', __name__, url_prefix='/record')
@@ -35,37 +39,38 @@ def import_transactions(filename):
 
 @bp.route('/')
 @login_required
+@csrf.exempt
 def index():
-  items = db.session.query(Record, Merchant, Category).filter_by(user_id=current_user.id)
-  items = items.join(Merchant, Record.merchant_id == Merchant.id, isouter=True)
-  items = items.join(Category, Record.category_id == Category.id, isouter=True)
+  records = db.session.query(Record).filter_by(user_id=current_user.id).order_by('id')
   args = {}
 
   if 'sort_by' in request.args:
     args['sort_by'] = request.args.get('sort_by')
     for clause in args['sort_by'].split(','):
-      items = items.order_by(getattr(Record, clause))
+      records = records.order_by(getattr(Record, clause))
 
   if 'filter_by' in request.args:
     args['filter_by'] = request.args.get('filter_by')
     for clause in args['filter_by'].split(','):
       key, val = clause.split(':')
       if key in ('category_id', 'merchant_id'):
-        items = items.filter(getattr(Record, key) == int(val))
+        records = records.filter(getattr(Record, key) == int(val))
       elif key in ('date_from'):
         date_from = datetime.datetime.strptime(request.args.get('date_from'), '%Y-%m-%d')
-        items = items.filter(Record.date >= date_from)
+        records = records.filter(Record.date >= date_from)
       elif key in ('date_to'):
         date_to = datetime.datetime.strptime(request.args.get('date_to'), '%Y-%m-%d')
-        items = items.filter(Record.date <= date_to)
+        records = records.filter(Record.date <= date_to)
 
+  search_form = RecordSearchForm()
   if 'search' in request.args:
     args['search'] = request.args.get('search')
-    items = items.filter(Record.description.ilike('%' + args['search'] + '%'))
+    search_form.search.data = args['search']
+    records = records.filter(Record.description.ilike('%' + args['search'] + '%'))
 
   page = request.args.get('page', 1, type=int)
-  items = items.paginate(page=page, per_page=50)
-  return render_template('record/index.html', items=items, args=args)
+  records = records.paginate(page=page, per_page=50)
+  return render_template('record/index.html', records=records, args=args, Record=Record, form=search_form)
 
 
 @bp.route('/add' , methods=['GET', 'POST'])

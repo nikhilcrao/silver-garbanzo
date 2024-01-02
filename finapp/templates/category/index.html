@@ -1,43 +1,26 @@
-{% extends "bootstrap/base.html" %}
-{% import "bootstrap/utils.html" as utils %}
+{% extends "base.html" %}
 
-{% block title %}
-Category
-{% endblock %}
+{% from 'bootstrap5/table.html' import render_table %}
+
+{% block title %}Categories{% endblock %}
 
 {% block content %}
-{{ utils.flashed_messages(dismissible=True) }}
-<div class="container">
-  <div class="row">
-    <table class="table table-hover">
-      <tr>
-        <th></th>
-        <th></th>
-        <th>Name</th>
-        <th>Parent ID</th>
-      </tr>
-      {% for category in categories %}
-      <tr>
-        <td>
-          <a href="{{ url_for('category.edit', id=category.id) }}" class="btn btn-light">
-            Edit
-          </a>
-        </td>
-        <td>
-          <a href="{{ url_for('category.delete', id=category.id) }}" class="btn btn-danger">
-            Delete
-          </a>
-        </td>
-<td>{{ category.name }}</td>
-        <td>{{ category.parent_id }}</td>
-      </tr>
-      {% endfor %}
-    </table>
-  </div>
-  <div class="row">
-    <ul>
-      <li><a href="{{ url_for('category.add') }}">Add Category</a></li>
-    </ul>
+<div class="container mt-5">
+  <div class="row justify-content-center mt-2">
+    <div class="col-md-6">
+      <h2>Categories</h2>
+      {{ render_table(categories,
+                      titles=[
+                        ('id', '#'),
+                        ('name', 'Name'),
+                        ('parent_id', 'Parent ID'),
+                      ],
+                      show_actions=True,
+                      model=Category,
+                      edit_url=('category.edit', [('id', ':id')]),
+                      delete_url=('category.delete', [('id', ':id')]),
+                      new_url='category.add') }}
+    </div>
   </div>
 </div>
 {% endblock %}

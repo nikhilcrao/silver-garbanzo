@@ -1,7 +1,12 @@
 import os
 
 from flask import Flask, redirect, url_for
-from flask_bootstrap import Bootstrap
+from flask_bootstrap import Bootstrap5
+from flask_wtf import CSRFProtect
+
+
+bootstrap = Bootstrap5()
+csrf = CSRFProtect()
 
 
 def create_app(test_config=None):
@@ -12,7 +17,9 @@ def create_app(test_config=None):
         UPLOAD_FOLDER = os.path.join(app.instance_path, 'uploads'),
     )
 
-    Bootstrap(app)
+    bootstrap.init_app(app)
+    csrf.init_app(app)
+
 
     if test_config is None:
         app.config.from_pyfile('config.py', silent=True)

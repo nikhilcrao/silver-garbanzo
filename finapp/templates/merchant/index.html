@@ -1,42 +1,25 @@
-{% extends "bootstrap/base.html" %}
-{% import "bootstrap/utils.html" as utils %}
+{% extends "base.html" %}
 
-{% block title %}
-Category
-{% endblock %}
+{% from "bootstrap5/table.html" import render_table %}
+
+{% block title %}Merchants{% endblock %}
 
 {% block content %}
-{{ utils.flashed_messages(dismissible=True) }}
-
-<div class="container">
-  <div class="row">
-    <table class="table table-hover">
-      <tr>
-        <th></th>
-        <th></th>
-        <th>Name</th>
-      </tr>
-      {% for merchant in merchants %}
-      <tr>
-        <td>
-          <a href="{{ url_for('merchant.edit', id=merchant.id) }}" class="btn btn-light">
-            Edit
-          </a>
-        </td>
-        <td>
-          <a href="{{ url_for('merchant.delete', id=merchant.id) }}" class="btn btn-danger">
-            Delete
-          </a>
-        </td>
-        <td>{{ merchant.name }}</td>
-      </tr>
-      {% endfor %}
-    </table>
-  </div>
-  <div class="row">
-    <ul>
-      <li><a href="{{ url_for('merchant.add') }}">Add Merchant</a></li>
-    </ul>
+<div class="container mt-5">
+  <div class="row justify-content-center mt-2">
+    <div class="col-md-6">
+      <h2>Merchants</h2>
+      {{ render_table(merchants,
+                      titles=[
+                        ('id', '#'),
+                        ('name', 'Name'),
+                      ],
+                      show_actions=True,
+                      model=Merchant,
+                      edit_url=('merchant.edit', [('id', ':id')]),
+                      delete_url=('merchant.delete', [('id', ':id')]),
+                      new_url='merchant.add') }}
+    </div>
   </div>
 </div>
 {% endblock %}

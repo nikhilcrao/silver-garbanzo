@@ -9,12 +9,8 @@ from flask_login import current_user, login_required
 bp = Blueprint('merchant', __name__, url_prefix='/merchant')
 
 
-def get_merchants():
-  return Merchant.query.filter_by(user_id=current_user.id).order_by('name')
-
-
 def get_merchant_id_choices(exclude_ids=[]):
-  merchants = get_merchants()
+  merchants = Merchant.query.filter_by(user_id=current_user.id).order_by('name')
   merchant_id_choices = [(0, 'None')]
   for merchant in merchants:
     if merchant.id not in exclude_ids:
@@ -25,8 +21,8 @@ def get_merchant_id_choices(exclude_ids=[]):
 @bp.route('/')
 @login_required
 def index():
-  merchants = get_merchants()
-  return render_template('merchant/index.html', merchants=merchants)
+  merchants = Merchant.query.filter_by(user_id=current_user.id).order_by('id')
+  return render_template('merchant/index.html', merchants=merchants, Merchant=Merchant)
 
 
 @bp.route('/add' , methods=['GET', 'POST'])

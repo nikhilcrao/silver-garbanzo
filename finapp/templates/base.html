@@ -1,0 +1,30 @@
+{% import "bootstrap5/utils.html" as utils %}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    {% block head %}
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    
+    {% block styles %}
+    {{ bootstrap.load_css() }}
+    <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='bootstrap.min.css') }}">
+    {% endblock %}
+
+    <title>{% block title %}{% endblock %} | Finapp</title>
+    
+    {% endblock %}
+  </head>
+  <body>
+    {% block alerts %}
+    {{ utils.render_messages(dismissible=True) }}
+    {% endblock %}
+
+    {% block content %}{% endblock %}
+    
+    {% block scripts %}
+    {{ bootstrap.load_js() }}
+    {% endblock %}
+  </body>
+</html>

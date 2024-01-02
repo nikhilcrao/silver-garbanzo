@@ -1,32 +1,47 @@
-{% extends "bootstrap/base.html" %}
-{% import "bootstrap/utils.html" as utils %}
+{% extends "base.html" %}
 
-{% block title %}
-Category
-{% endblock %}
+{% from "bootstrap5/form.html" import render_form %}
+{% from "bootstrap5/table.html" import render_table %}
+{% from 'bootstrap5/pagination.html' import render_pagination %}
 
-{% macro render_pagination(pagination, endpoint) %}
-  <div class="page-items">
-    {{ pagination.first }} - {{ pagination.last }} of {{ pagination.total }}
-  </div>
-  <div class="pagination">
-    {% for page in pagination.iter_pages() %}
-      {% if page %}
-        {% if page != pagination.page %}
-          <a href="{{ url_for(endpoint, page=page, **args) }}">{{ page }}</a>
-        {% else %}
-          <strong>{{ page }}</strong>
-        {% endif %}
-      {% else %}
-        <span class="ellipsis">…</span>
-      {% endif %}
-    {% endfor %}
-  </div>
-{% endmacro %}
+{% block title %}Records{% endblock %}
 
 {% block content %}
-{{ utils.flashed_messages(dismissible=True) }}
+<div class="container mt-5">
+  <div class="row justify-content-center mt-2">
+    <div class="col-md">
+      <h2>Records</h2>
+      {{ render_form(form,
+                     action='/record/',
+                     method='GET',
+                     form_type='horizontal') }}
+    </div>
+  </div>
+  <div class="row justify-content-center mt-2">
+    <div class="col-md">
+      {{ render_table(records,
+                      titles=[
+                        ('id', '#'),
+                        ('date', 'Date'),
+                        ('description', 'Description'),
+                        ('amount', 'Amount'),
+                        ('category_id', 'Category'),
+                        ('merchant_id', 'Merchant'),
+                      ],
+                      show_actions=True,
+                      custom_actions=[
+                        ('New Rule', 'file-ruled', ('rule.add', [('keywords', ':description')])),
+                      ],
+                      model=Record,
+                      edit_url=('record.edit', [('id', ':id'), ('next', request.path)]),
+                      new_url='record.add') }}
+      {{ render_pagination(records, **args) }}
+    </div>
+  </div>
+</div>
+{% endblock %}
 
+{% block content2 %}
 <div class="container">
   <div class="row">
     <div class="row">

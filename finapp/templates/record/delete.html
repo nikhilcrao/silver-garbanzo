@@ -1,32 +1,17 @@
-{% extends "bootstrap/base.html" %}
+{% extends "base.html" %}
 
-{% import "bootstrap/wtf.html" as wtf %}
-{% import "bootstrap/utils.html" as utils %}
+{% from "bootstrap5/form.html" import render_form %}
 
+{% block title %}Delete Record{% endblock %}
 
 {% block content %}
-{{ utils.flashed_messages(dismissible=True) }}
-<div class="container">
-  <table class="table table-hover">
-    <tr>
-      <td>Record</td>
-      <td>{{ record.id }}</td>
-    </tr>
-    <tr>
-      <td>Amount</td>
-      <td>{{ record.amount }}</td>
-    </tr>
-    <tr>
-      <td>Description</td>
-      <td>{{ record.description }}</td>
-    </tr>
-    <tr>
-      <td>Date</td>
-      <td>{{ record.date }}</td>
-    </tr>
-  </table>
-</div>
-<div class="container">
-  {{ wtf.quick_form(form) }}
+<div class="container mt-5">
+  <div class="row justify-content-center mt-2">
+    <div class="col-md-6">
+      <h2>Delete Record</h2>
+      <p>Are you sure you want to delete {{ record.id }}?</p>
+      {{ render_form(form) }}
+    </div>
+  </div>
 </div>
 {% endblock %}
