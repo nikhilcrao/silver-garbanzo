@@ -91,7 +91,9 @@ def index():
   page = request.args.get('page', 1, type=int)
   records = records.paginate(page=page, per_page=50)
 
-  return render_template('record/index.html', records=records, form=form, Record=Record, uncategorized_count=g.get('uncategorized', 0))
+  uncategorized_count = Record.query.filter(Record.category_id == 0).count()
+
+  return render_template('record/index.html', records=records, form=form, Record=Record, uncategorized_count=uncategorized_count)
 
 
 @bp.route('/add' , methods=['GET', 'POST'])

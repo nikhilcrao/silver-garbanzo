@@ -76,7 +76,7 @@ def add():
       db.session.add(rule)
       db.session.commit()
       flash(f"New rule added successfully.")
-      return redirect(url_for('record.index'))
+      return redirect(url_for('rule.apply'))
     except:
       flash(f"Rule could not be added.", 'danger')
       db.session.rollback()
@@ -104,7 +104,7 @@ def edit(id):
         rule.category_id = add_category(form.new_category_name.data)
       db.session.commit()
       flash(f"Rule {form.id.data} updated successfully.")
-      return redirect(url_for('rule.index'))
+      return redirect(url_for('rule.apply'))
     except:
       flash(f"Error updating rule {form.id.data}", 'danger')
 
@@ -147,8 +147,7 @@ def apply():
     try:
       db.session.commit()
       flash(f"Applied rules successfully.")
-      g['uncategorized'] = Record.query.filter(Record.category_id == 0).count()
-      return redirect(url_for('rule.index'))
+      return redirect(url_for('record.index'))
     except:
       flash(f"Error applying rules.", 'danger')
       db.session.rollback()
